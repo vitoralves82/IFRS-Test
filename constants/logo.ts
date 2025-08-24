@@ -1,0 +1,1 @@
+export const WITT_OBRIENS_LOGO_URL = 'https://media.licdn.com/dms/image/v2/C4D0BAQFDT95yOxdRoA/company-logo_200_200/company-logo_200_200/0/1677195066679/witt_obriens_brasil_logo?e=2147483647&v=beta&t=fkch40IbGLMRyldmiVBgOzkMQ9W6IA-1wJzvwkfU7LU';
