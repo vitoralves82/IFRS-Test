@@ -1,6 +1,6 @@
 import React from 'react';
 import type { AiCheckResult } from '../types';
-import { CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, XCircle, Wrench } from 'lucide-react';
 
 const aiCheckStyles: { [key in AiCheckResult['status']]: { title: string, icon: React.FC<any>, container: string, iconColor: string, textColor: string } } = {
     sufficient: {
@@ -41,20 +41,35 @@ const AiCheckDisplay: React.FC<{ aiCheck?: AiCheckResult, small?: boolean }> = (
     }
 
     return (
-        <div className={`mt-4 p-4 rounded-lg border-l-4 ${styles.container}`}>
-            <div className="flex">
-                <div className="flex-shrink-0">
-                    <styles.icon className={`h-5 w-5 ${styles.iconColor}`} aria-hidden="true" />
-                </div>
-                <div className="ml-3">
-                    <p className={`text-sm font-bold ${styles.textColor}`}>
-                        {styles.title}
-                    </p>
-                    <p className="mt-1 text-sm text-slate-700">
-                        {aiCheck.feedback}
-                    </p>
+        <div className={`mt-4 rounded-lg border-l-4 ${styles.container}`}>
+            <div className="p-4">
+                <div className="flex">
+                    <div className="flex-shrink-0">
+                        <styles.icon className={`h-5 w-5 ${styles.iconColor}`} aria-hidden="true" />
+                    </div>
+                    <div className="ml-3">
+                        <p className={`text-sm font-bold ${styles.textColor}`}>
+                            {styles.title}
+                        </p>
+                        <p className="mt-1 text-sm text-slate-700">
+                            {aiCheck.feedback}
+                        </p>
+                    </div>
                 </div>
             </div>
+            {aiCheck.improvementSuggestion && (
+                <div className="mt-2 p-4 border-t border-current/20">
+                    <div className="flex">
+                        <div className="flex-shrink-0">
+                            <Wrench className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                        </div>
+                        <div className="ml-3">
+                             <h4 className="text-sm font-bold text-slate-800">Sugestão de Melhoria</h4>
+                             <p className="mt-1 text-sm text-slate-700">{aiCheck.improvementSuggestion}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

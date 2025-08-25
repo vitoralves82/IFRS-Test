@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { GoogleGenAI, Type } from "@google/genai";
 import type { Question, Answer, AnswersState, Attachment, AnswerValue, QuestionType, Topic, AiCheckResult } from '../types';
@@ -204,15 +203,24 @@ const EditQuestionModal: React.FC<{
                 type: Type.OBJECT,
                 properties: {
                     status: { type: Type.STRING, description: 'Avaliação da resposta. Valores: "sufficient", "insufficient", "partial".' },
-                    feedback: { type: Type.STRING, description: 'Justificativa para a avaliação.' },
+                    feedback: { type: Type.STRING, description: 'Justificativa concisa para a avaliação do status.' },
+                    improvementSuggestion: { type: Type.STRING, description: 'Recomendação clara e construtiva de como a resposta pode ser melhorada para atingir a conformidade total, com base no requisito da norma.' }
                 },
-                required: ['status', 'feedback'],
+                required: ['status', 'feedback', 'improvementSuggestion'],
             };
-            const promptText = `Você é um consultor especialista em conformidade IFRS. Sua tarefa é analisar se uma resposta e sua evidência são suficientes para atender a uma pergunta.
-- Pergunta: "${question.text}"
-- Resposta: "${formatAnswerForPrompt(currentAnswer.value, question.type)}"
-- Evidência: "${currentAnswer.evidence}"
-Avalie se a resposta atende à pergunta. Status pode ser 'sufficient', 'insufficient', ou 'partial'. Forneça a avaliação em JSON.`;
+            const promptText = `Você é um consultor especialista em conformidade com as normas IFRS S1 e S2. Sua tarefa é analisar criticamente se uma resposta e sua evidência atendem a um requisito específico da norma.
+
+- Requisito da Norma (${question.reference}): "${question.reference_text || 'Não especificado.'}"
+- Pergunta de Conformidade: "${question.text}"
+- Resposta do Usuário: "${formatAnswerForPrompt(currentAnswer.value, question.type)}"
+- Evidência do Usuário: "${currentAnswer.evidence || 'Nenhuma evidência fornecida.'}"
+
+Avalie a resposta com base nos seguintes critérios:
+1.  **Status**: A resposta é 'sufficient' (atende completamente), 'partial' (atende parcialmente) ou 'insufficient' (não atende)?
+2.  **Feedback**: Justifique sua avaliação de status de forma concisa.
+3.  **Sugestão de Melhoria**: Forneça uma recomendação clara e construtiva. Descreva como a resposta poderia ser melhorada para atingir a conformidade total, citando o que está faltando ou o que deveria ser incluído, com base no requisito da norma.
+
+Forneça sua avaliação em formato JSON, seguindo o esquema definido.`;
 
             const response = await ai.models.generateContent({
                 model: 'gemini-2.5-flash', contents: promptText,
@@ -430,15 +438,24 @@ const QuestionCard: React.FC<{
                 type: Type.OBJECT,
                 properties: {
                     status: { type: Type.STRING, description: 'Avaliação da resposta. Valores: "sufficient", "insufficient", "partial".' },
-                    feedback: { type: Type.STRING, description: 'Justificativa para a avaliação.' },
+                    feedback: { type: Type.STRING, description: 'Justificativa concisa para a avaliação do status.' },
+                    improvementSuggestion: { type: Type.STRING, description: 'Recomendação clara e construtiva de como a resposta pode ser melhorada para atingir a conformidade total, com base no requisito da norma.' }
                 },
-                required: ['status', 'feedback'],
+                required: ['status', 'feedback', 'improvementSuggestion'],
             };
-            const promptText = `Você é um consultor especialista em conformidade IFRS. Sua tarefa é analisar se uma resposta e sua evidência são suficientes para atender a uma pergunta.
-- Pergunta: "${question.text}"
-- Resposta: "${formatAnswerForPrompt(answer.value, question.type)}"
-- Evidência: "${answer.evidence}"
-Avalie se a resposta atende à pergunta. Status pode ser 'sufficient', 'insufficient', ou 'partial'. Forneça a avaliação em JSON.`;
+            const promptText = `Você é um consultor especialista em conformidade com as normas IFRS S1 e S2. Sua tarefa é analisar criticamente se uma resposta e sua evidência atendem a um requisito específico da norma.
+
+- Requisito da Norma (${question.reference}): "${question.reference_text || 'Não especificado.'}"
+- Pergunta de Conformidade: "${question.text}"
+- Resposta do Usuário: "${formatAnswerForPrompt(answer.value, question.type)}"
+- Evidência do Usuário: "${answer.evidence || 'Nenhuma evidência fornecida.'}"
+
+Avalie a resposta com base nos seguintes critérios:
+1.  **Status**: A resposta é 'sufficient' (atende completamente), 'partial' (atende parcialmente) ou 'insufficient' (não atende)?
+2.  **Feedback**: Justifique sua avaliação de status de forma concisa.
+3.  **Sugestão de Melhoria**: Forneça uma recomendação clara e construtiva. Descreva como a resposta poderia ser melhorada para atingir a conformidade total, citando o que está faltando ou o que deveria ser incluído, com base no requisito da norma.
+
+Forneça sua avaliação em formato JSON, seguindo o esquema definido.`;
 
             const response = await ai.models.generateContent({
                 model: 'gemini-2.5-flash', contents: promptText,

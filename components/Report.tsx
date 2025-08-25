@@ -272,6 +272,11 @@ const ReviewModal: React.FC<{
                                                         </a>
                                                     )}
                                                 </div>
+                                                {answer?.aiCheck && (
+                                                    <div className="mt-4">
+                                                        <AiCheckDisplay aiCheck={answer.aiCheck} />
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     );

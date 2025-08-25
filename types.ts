@@ -12,6 +12,7 @@ export type AnswerValue = string | string[] | boolean | null;
 export interface AiCheckResult {
   status: 'sufficient' | 'insufficient' | 'partial';
   feedback: string;
+  improvementSuggestion: string;
 }
 
 // Updated Answer interface
